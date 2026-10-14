@@ -1,0 +1,1072 @@
+/* =====================================================================
+   SISTEMA DE GESTION HOTELERA
+   Tema visual: FLAT DESIGN CLASICO (estilo Metro / Flat UI)
+
+   CSS puro sobre Bootstrap 5. Sin SCSS, sin compilador, sin proceso de
+   construccion: son variables CSS nativas que el navegador interpreta
+   directamente.
+
+   ---------------------------------------------------------------------
+   FILOSOFIA DEL TEMA
+   ---------------------------------------------------------------------
+   El diseno plano renuncia a imitar el mundo fisico. No hay sombras,
+   degradados, biseles ni texturas. La jerarquia se construye con tres
+   recursos y nada mas:
+
+     1. BLOQUES DE COLOR SOLIDO  - un tono plano, sin transiciones.
+     2. ESPACIO EN BLANCO        - la separacion ordena, no las sombras.
+     3. TIPOGRAFIA               - el peso y el tamano marcan importancia.
+
+   ---------------------------------------------------------------------
+   CATALOGO DE COMPONENTES REUTILIZABLES
+   ---------------------------------------------------------------------
+     .card            Tarjeta blanca contenedora (Bootstrap, re-estilizada)
+     .indicador       Tarjeta de metrica con franja de color superior
+     .habitacion      Ficha compacta de habitacion con estado por color
+     .btn-hotel       Boton primario solido (azul)
+     .btn-oro         Boton de llamada a la accion (naranja)
+     .badge-suave     Etiqueta solida para codigos e identificadores
+     .form-control    Campo de entrada plano (Bootstrap, re-estilizado)
+     .linea-tiempo    Lista vertical de movimientos
+     .hoja-factura    Hoja de documento para impresion
+
+   ---------------------------------------------------------------------
+   COMO SE APLICA LA PALETA SIN TOCAR EL HTML
+   ---------------------------------------------------------------------
+   Bootstrap 5.3 define sus colores y su radio de esquina como variables
+   CSS. Redefinirlas aqui reescribe de una sola vez todas las clases
+   utilitarias que usan las 31 vistas JSP (bg-success, text-danger,
+   alert-warning, badge bg-info, border-success...) sin editar ni una
+   linea de marcado.
+   ===================================================================== */
+
+/* =====================================================================
+   1. PALETA
+   ===================================================================== */
+
+:root {
+    /* ---- Azules: color principal, cabeceras y acciones ---- */
+    --flat-azul:          #3498db;
+    --flat-azul-oscuro:   #2980b9;
+
+    /* ---- Turquesa: exito, estados activos, medidores ---- */
+    --flat-turquesa:      #1abc9c;
+    --flat-turquesa-osc:  #16a085;
+
+    /* ---- Naranja: llamadas a la accion ---- */
+    --flat-naranja:       #e67e22;
+    --flat-naranja-osc:   #d35400;
+
+    /* ---- Rosa: etiquetas especiales y categorias secundarias ---- */
+    --flat-rosa:          #e84393;
+    --flat-rosa-osc:      #c62b76;
+
+    /* ---- Rojo y amarillo: alertas y estados ---- */
+    --flat-rojo:          #e74c3c;
+    --flat-rojo-osc:      #c0392b;
+    --flat-amarillo:      #f1c40f;
+    --flat-amarillo-osc:  #f39c12;
+
+    /* ---- Oscuros y neutros ---- */
+    --flat-oscuro:        #2c3e50;  /* texto principal y menu lateral */
+    --flat-oscuro-2:      #34495e;
+    --flat-noche:         #1e272e;  /* fondos de pantalla completa */
+    --flat-gris:          #95a5a6;
+    --flat-gris-claro:    #bdc3c7;
+    --flat-borde:         #dfe6e9;
+    --flat-fondo:         #ecf0f1;  /* fondo general de la aplicacion */
+    --flat-blanco:        #ffffff;
+
+    /* ---- Medidas ---- */
+    --menu-ancho:         258px;
+    --radio:              3px;      /* esquinas apenas suavizadas */
+    --radio-boton:        4px;
+
+    /* -----------------------------------------------------------------
+       ALIAS HEREDADOS
+       Las vistas JSP llevan 32 estilos en linea que invocan estas cuatro
+       variables. Se mantienen definidas y reasignadas a la paleta nueva,
+       de modo que el marcado existente sigue funcionando sin cambios.
+       ----------------------------------------------------------------- */
+    --hotel-azul:         #2980b9;
+    --hotel-noche:        #2c3e50;
+    --hotel-oro:          #e67e22;
+    --hotel-oro-suave:    #fadfc4;
+
+    /* -----------------------------------------------------------------
+       REDEFINICION DE BOOTSTRAP
+       ----------------------------------------------------------------- */
+
+    /* Esquinas: un radio minimo, no capsulas ni tarjetas redondeadas. */
+    --bs-border-radius:      3px;
+    --bs-border-radius-sm:   2px;
+    --bs-border-radius-lg:   3px;
+    --bs-border-radius-xl:   3px;
+    --bs-border-radius-2xl:  3px;
+    --bs-border-radius-pill: 3px;
+
+    /* Colores semanticos. El par hex + rgb es necesario porque las
+       utilidades de Bootstrap componen el color con opacidad. */
+    --bs-primary:        #3498db;   --bs-primary-rgb:    52, 152, 219;
+    --bs-secondary:      #95a5a6;   --bs-secondary-rgb:  149, 165, 166;
+    --bs-success:        #1abc9c;   --bs-success-rgb:    26, 188, 156;
+    --bs-danger:         #e74c3c;   --bs-danger-rgb:     231, 76, 60;
+    --bs-warning:        #f1c40f;   --bs-warning-rgb:    241, 196, 15;
+    --bs-info:           #3498db;   --bs-info-rgb:       52, 152, 219;
+    --bs-light:          #ecf0f1;   --bs-light-rgb:      236, 240, 241;
+    --bs-dark:           #2c3e50;   --bs-dark-rgb:       44, 62, 80;
+
+    --bs-body-color:     #2c3e50;   --bs-body-color-rgb: 44, 62, 80;
+    --bs-body-bg:        #ecf0f1;
+    --bs-border-color:   #dfe6e9;
+    --bs-secondary-color: rgba(44, 62, 80, .6);
+
+    --bs-link-color:        #2980b9;
+    --bs-link-hover-color:  #1f6391;
+    --bs-link-color-rgb:    41, 128, 185;
+
+    /* Variantes suaves: las vistas usan mucho el par
+       "bg-X-subtle + text-X-emphasis" para etiquetas de estado. */
+    --bs-primary-bg-subtle:      #d6eaf8;
+    --bs-primary-border-subtle:  #aed6f1;
+    --bs-primary-text-emphasis:  #1f6391;
+
+    --bs-success-bg-subtle:      #d4f5ed;
+    --bs-success-border-subtle:  #a3e7d8;
+    --bs-success-text-emphasis:  #0e6655;
+
+    --bs-danger-bg-subtle:       #fadbd8;
+    --bs-danger-border-subtle:   #f5b7b1;
+    --bs-danger-text-emphasis:   #922b21;
+
+    --bs-warning-bg-subtle:      #fdf3cf;
+    --bs-warning-border-subtle:  #fbe7a1;
+    --bs-warning-text-emphasis:  #7e6514;
+
+    --bs-info-bg-subtle:         #d6eaf8;
+    --bs-info-border-subtle:     #aed6f1;
+    --bs-info-text-emphasis:     #1f6391;
+
+    --bs-secondary-bg-subtle:    #eaeded;
+    --bs-secondary-border-subtle:#d5dbdb;
+    --bs-secondary-text-emphasis:#5d6d7e;
+
+    --bs-light-bg-subtle:        #fbfcfc;
+    --bs-dark-bg-subtle:         #d5dbdb;
+    --bs-dark-text-emphasis:     #2c3e50;
+}
+
+/* =====================================================================
+   2. BASE Y TIPOGRAFIA
+   ===================================================================== */
+
+/*
+   Dos familias geometricas sin serifa: Montserrat para titulos, por su
+   trazo ancho y geometrico, y Open Sans para texto corrido, que a
+   tamanos pequenos se lee mejor. Ambas con alternativas del sistema por
+   si no hay conexion a internet.
+*/
+body {
+    background-color: var(--flat-fondo);
+    color: var(--flat-oscuro);
+    font-family: "Open Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: .9rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+.barra-superior .titulo,
+.indicador .valor,
+.habitacion .numero {
+    font-family: "Montserrat", "Segoe UI", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    color: var(--flat-oscuro);
+}
+
+a { text-decoration: none; }
+
+/*
+   Barrido general. Elimina toda sombra y aplana el radio de las clases
+   utilitarias que las vistas ya traen escritas (rounded-3, shadow...).
+   En diseno plano no existe ninguna de las dos cosas.
+*/
+.card, .btn, .form-control, .form-select, .input-group-text, .badge,
+.alert, .dropdown-menu, .modal-content, .progress, .progress-bar,
+.list-group, .list-group-item, .nav-tabs .nav-link, .table,
+.rounded, .rounded-1, .rounded-2, .rounded-3, .rounded-4,
+.indicador, .habitacion, .hoja-factura, .badge-suave, .avatar {
+    box-shadow: none !important;
+}
+
+.rounded, .rounded-1, .rounded-2, .rounded-3, .rounded-4 {
+    border-radius: 3px !important;
+}
+
+/* =====================================================================
+   3. MENU LATERAL
+   ===================================================================== */
+
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--menu-ancho);
+    height: 100vh;
+    background-color: var(--flat-oscuro);
+    color: #aeb9c4;
+    display: flex;
+    flex-direction: column;
+    z-index: 1040;
+    overflow-y: auto;
+}
+
+/* Bloque de marca en color solido, sin degradado. */
+.menu-lateral .marca {
+    padding: 1.5rem 1.35rem;
+    background-color: var(--flat-azul);
+}
+
+.menu-lateral .marca .nombre {
+    font-family: "Montserrat", "Segoe UI", sans-serif;
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.menu-lateral .marca .lema {
+    color: rgba(255, 255, 255, .8);
+    font-size: .64rem;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+}
+
+.menu-lateral .grupo {
+    padding: 1.4rem 1.35rem .45rem;
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #718093;
+}
+
+.menu-lateral .enlace {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .65rem 1.35rem;
+    color: #aeb9c4;
+    font-size: .875rem;
+    font-weight: 600;
+    border-left: 4px solid transparent;
+    /* Solo cambia el color: ningun desplazamiento ni relieve. */
+    transition: background-color .12s linear, color .12s linear;
+}
+
+.menu-lateral .enlace i { font-size: 1.05rem; }
+
+.menu-lateral .enlace:hover {
+    background-color: var(--flat-oscuro-2);
+    color: #fff;
+}
+
+/* El elemento activo es un bloque solido de color, el recurso clasico
+   del estilo Metro para senalar donde esta el usuario. */
+.menu-lateral .enlace.activo {
+    background-color: var(--flat-azul);
+    border-left-color: var(--flat-naranja);
+    color: #fff;
+}
+
+.menu-lateral .enlace.activo i { color: #fff; }
+
+.menu-lateral .pie-menu {
+    margin-top: auto;
+    padding: 1.1rem 1.35rem;
+    border-top: 1px solid var(--flat-oscuro-2);
+    font-size: .68rem;
+    color: #718093;
+}
+
+/* =====================================================================
+   4. AREA DE CONTENIDO
+   ===================================================================== */
+
+.contenido {
+    margin-left: var(--menu-ancho);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.barra-superior {
+    background-color: var(--flat-blanco);
+    border-bottom: 1px solid var(--flat-borde);
+    padding: .9rem 1.9rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.barra-superior .titulo { font-size: 1.22rem; margin: 0; }
+
+.barra-superior .subtitulo {
+    font-size: .78rem;
+    color: var(--flat-gris);
+    margin: 0;
+}
+
+/* Avatares como bloques cuadrados de color solido. */
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 3px;
+    background-color: var(--flat-azul);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Montserrat", "Segoe UI", sans-serif;
+    font-weight: 700;
+    font-size: .8rem;
+    flex-shrink: 0;
+}
+
+.avatar.oro { background-color: var(--flat-naranja); color: #fff; }
+.avatar.chico { width: 30px; height: 30px; font-size: .68rem; }
+
+/* Espacio en blanco generoso alrededor del contenido. */
+.cuerpo { padding: 1.85rem 1.9rem 3.5rem; flex: 1; }
+
+/* =====================================================================
+   5. TARJETAS Y PANELES
+   ===================================================================== */
+
+.card {
+    background-color: var(--flat-blanco);
+    border: 1px solid var(--flat-borde);
+}
+
+.card-header {
+    background-color: var(--flat-blanco);
+    border-bottom: 1px solid var(--flat-borde);
+    font-family: "Montserrat", "Segoe UI", sans-serif;
+    font-weight: 600;
+    font-size: .875rem;
+    color: var(--flat-oscuro);
+    padding: .9rem 1.2rem;
+}
+
+.card-body { padding: 1.2rem; }
+
+.card-footer {
+    background-color: var(--flat-blanco);
+    border-top: 1px solid var(--flat-borde);
+    padding: .9rem 1.2rem;
+}
+
+/* ------------------------------------------------ Tarjeta de metrica */
+
+/*
+   La metrica es un BLOQUE DE COLOR SOLIDO con texto blanco: el mosaico
+   de baldosas que define el estilo Metro. El color no decora, aporta
+   jerarquia; por eso el dato se lee en blanco sobre el color y no al
+   reves.
+*/
+.indicador {
+    background-color: var(--flat-azul);
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    padding: 1.25rem 1.35rem;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.indicador .etiqueta {
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .85);
+}
+
+.indicador .valor { font-size: 1.95rem; line-height: 1.15; }
+
+.indicador .nota { font-size: .75rem; }
+
+.indicador .icono {
+    position: absolute;
+    right: 1.1rem;
+    top: 1.1rem;
+    font-size: 1.7rem;
+    color: rgba(255, 255, 255, .3);
+}
+
+/*
+   Dentro de la baldosa todo se vuelve blanco. Las vistas traen clases
+   de color escritas en el marcado (text-success, text-warning, bg-*)
+   que sobre un fondo de color quedarian ilegibles; estas reglas las
+   neutralizan sin tocar el HTML.
+*/
+.indicador .valor,
+.indicador .valor *,
+.indicador .nota,
+.indicador .nota *,
+.indicador a { color: #fff !important; }
+
+.indicador .progress { background-color: rgba(255, 255, 255, .3); }
+.indicador .progress-bar { background-color: #fff !important; }
+
+/* Las etiquetas pasan a ser bloques translucidos sobre el color. */
+.indicador .badge {
+    background-color: rgba(255, 255, 255, .22) !important;
+    color: #fff !important;
+}
+
+/*
+   COLOR POR POSICION.
+   Cuando la metrica no tiene un significado de estado (el tablero, por
+   ejemplo), las baldosas ciclan azul, turquesa, naranja y rosa segun su
+   lugar en la fila. Es lo que da el aspecto multicolor de la referencia,
+   y se consigue solo con CSS.
+*/
+.row > [class*="col-"]:nth-child(4n+1) .indicador { background-color: var(--flat-azul); }
+.row > [class*="col-"]:nth-child(4n+2) .indicador { background-color: var(--flat-turquesa); }
+.row > [class*="col-"]:nth-child(4n+3) .indicador { background-color: var(--flat-naranja); }
+.row > [class*="col-"]:nth-child(4n+4) .indicador { background-color: var(--flat-rosa); }
+
+/*
+   COLOR POR SIGNIFICADO.
+   Cuando la metrica SI representa un estado, la vista ya lo indica con
+   una clase de color sobre el numero (text-success, text-danger...).
+   El selector :has() lee esa clase del hijo y pinta la baldosa entera
+   del color que corresponde, con lo que el color vuelve a significar
+   algo en lugar de ser decorativo.
+
+   Va despues del ciclo por posicion para poder sobreescribirlo. En un
+   navegador sin :has() las baldosas conservan el color posicional, que
+   sigue siendo valido.
+*/
+/*
+   Los selectores repiten el prefijo ".row > [class*=col-]" a proposito.
+   Sin el, la regla semantica tendria MENOS especificidad que la regla
+   por posicion de arriba y perderia: las baldosas se pintarian segun su
+   lugar en la fila aunque tuvieran un estado declarado. Con el prefijo
+   la especificidad sube y el significado gana sobre la posicion.
+*/
+.row > [class*="col-"] .indicador:has(.valor.text-success)   { background-color: var(--flat-turquesa); }
+.row > [class*="col-"] .indicador:has(.valor.text-primary)   { background-color: var(--flat-azul); }
+.row > [class*="col-"] .indicador:has(.valor.text-info)      { background-color: var(--flat-azul); }
+.row > [class*="col-"] .indicador:has(.valor.text-danger)    { background-color: var(--flat-rojo); }
+.row > [class*="col-"] .indicador:has(.valor.text-secondary) { background-color: var(--flat-gris); }
+.row > [class*="col-"] .indicador:has(.valor.text-dark)      { background-color: var(--flat-oscuro); }
+.row > [class*="col-"] .indicador:has(.valor.text-warning)   { background-color: var(--flat-amarillo); }
+
+/*
+   El amarillo es la excepcion: el blanco sobre amarillo no se lee. Esa
+   baldosa invierte el texto a azul oscuro.
+*/
+.indicador:has(.valor.text-warning) .etiqueta { color: rgba(44, 62, 80, .75); }
+.indicador:has(.valor.text-warning) .icono    { color: rgba(44, 62, 80, .25); }
+
+.indicador:has(.valor.text-warning) .valor,
+.indicador:has(.valor.text-warning) .valor *,
+.indicador:has(.valor.text-warning) .nota,
+.indicador:has(.valor.text-warning) .nota * { color: var(--flat-oscuro) !important; }
+
+.indicador:has(.valor.text-warning) .badge {
+    background-color: rgba(44, 62, 80, .18) !important;
+    color: var(--flat-oscuro) !important;
+}
+
+/* =====================================================================
+   6. REJILLA DE HABITACIONES
+   ===================================================================== */
+
+.rejilla-habitaciones {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 1rem;
+}
+
+/*
+   Cada habitacion es una baldosa de color solido. El estado se lee de
+   un vistazo por el color del bloque completo, que es justamente como
+   funciona el tablero fisico de llaves de una recepcion.
+*/
+.habitacion {
+    background-color: var(--flat-gris);   /* por omision: mantenimiento */
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    padding: .95rem 1rem;
+    transition: filter .12s linear;
+}
+
+/* Cambio de tonalidad plano al pasar el raton, sin sombra ni relieve. */
+.habitacion:hover { filter: brightness(1.08); }
+
+.habitacion .numero { font-size: 1.4rem; line-height: 1; color: #fff; }
+
+.habitacion .tipo {
+    font-size: .68rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, .85);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+}
+
+.habitacion .precio {
+    font-size: .84rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.habitacion .text-muted { color: rgba(255, 255, 255, .85) !important; }
+
+/* El icono de estado y el boton de opciones, en blanco. */
+.habitacion > .d-flex i,
+.habitacion .btn-link { color: #fff !important; }
+
+/* La etiqueta de estado pasa a ser un bloque translucido. */
+.habitacion .badge {
+    background-color: rgba(255, 255, 255, .22) !important;
+    color: #fff !important;
+}
+
+/* ---- Color de la baldosa segun el estado ---- */
+.habitacion.success { background-color: var(--flat-turquesa); }
+.habitacion.danger  { background-color: var(--flat-rojo); }
+.habitacion.warning { background-color: var(--flat-amarillo); }
+.habitacion.dark    { background-color: var(--flat-oscuro); }
+
+/* El amarillo no admite texto blanco: esa baldosa lo invierte. */
+.habitacion.warning .numero,
+.habitacion.warning .precio,
+.habitacion.warning > .d-flex i,
+.habitacion.warning .btn-link { color: var(--flat-oscuro) !important; }
+
+.habitacion.warning .tipo,
+.habitacion.warning .text-muted { color: rgba(44, 62, 80, .75) !important; }
+
+.habitacion.warning .badge {
+    background-color: rgba(44, 62, 80, .18) !important;
+    color: var(--flat-oscuro) !important;
+}
+
+/*
+   El menu desplegable de cada baldosa se despliega sobre fondo blanco,
+   asi que recupera los colores normales: de lo contrario quedaria
+   blanco sobre blanco.
+*/
+.habitacion .dropdown-menu .dropdown-item { color: var(--flat-oscuro) !important; }
+.habitacion .dropdown-menu .dropdown-item i { color: inherit !important; }
+.habitacion .dropdown-menu .dropdown-item:hover { background-color: var(--flat-fondo); }
+
+.habitacion .dropdown-menu .dropdown-item.text-danger,
+.habitacion .dropdown-menu .dropdown-item.text-danger i { color: var(--flat-rojo) !important; }
+
+.habitacion .dropdown-menu i.text-success   { color: var(--flat-turquesa) !important; }
+.habitacion .dropdown-menu i.text-warning   { color: var(--flat-amarillo-osc) !important; }
+.habitacion .dropdown-menu i.text-secondary { color: var(--flat-gris) !important; }
+
+.habitacion .dropdown-menu .dropdown-header { color: var(--flat-gris) !important; }
+
+/* =====================================================================
+   7. TABLAS
+   ===================================================================== */
+
+.table {
+    margin-bottom: 0;
+    --bs-table-border-color: #dfe6e9;
+}
+
+/* Cabecera en bloque oscuro solido: separa la cabecera de los datos
+   sin necesidad de lineas gruesas ni sombras. */
+.table > thead > tr > th {
+    background-color: var(--flat-oscuro);
+    border-bottom: none;
+    color: #fff;
+    font-family: "Montserrat", "Segoe UI", sans-serif;
+    font-size: .66rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: .7rem .75rem;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+    border-color: var(--flat-borde);
+    padding: .7rem .75rem;
+}
+
+.table-hover > tbody > tr:hover > td { background-color: #f4f7f8; }
+
+/* Las tablas de pares dato/valor dentro de una ficha no llevan
+   cabecera oscura: ahi el "th" es una etiqueta, no un encabezado. */
+.card-body .table > tbody > tr > th {
+    color: var(--flat-gris);
+    font-weight: 600;
+    font-size: .78rem;
+    background-color: transparent;
+}
+
+.numero-tabla { font-variant-numeric: tabular-nums; text-align: right; }
+
+/* =====================================================================
+   8. ETIQUETAS
+   ===================================================================== */
+
+.badge {
+    font-family: "Montserrat", "Segoe UI", sans-serif;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    font-size: .62rem;
+    padding: .38em .65em;
+}
+
+/* Etiqueta de identificador (codigos de reserva y de factura).
+   Usa el rosa de acento: son referencias, no estados, y conviene que
+   se distingan de las etiquetas de estado. */
+.badge-suave {
+    display: inline-block;
+    background-color: var(--flat-rosa);
+    color: #fff;
+    font-family: "Montserrat", "Segoe UI", sans-serif;
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    padding: .25rem .5rem;
+    border-radius: 3px;
+}
+
+a.badge-suave:hover { background-color: var(--flat-rosa-osc); color: #fff; }
+
+/* =====================================================================
+   9. FORMULARIOS
+   ===================================================================== */
+
+.form-label {
+    font-family: "Montserrat", "Segoe UI", sans-serif;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--flat-gris);
+    margin-bottom: .4rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid var(--flat-gris-claro);
+    color: var(--flat-oscuro);
+    font-size: .9rem;
+    padding: .5rem .75rem;
+    transition: border-color .12s linear;
+}
+
+.form-control::placeholder { color: var(--flat-gris-claro); }
+
+/*
+   El foco se marca con un borde solido de color, no con el halo
+   difuminado de Bootstrap: un resplandor es exactamente el tipo de
+   efecto que el diseno plano evita.
+*/
+.form-control:focus, .form-select:focus {
+    border-color: var(--flat-azul);
+    box-shadow: none !important;
+    outline: none;
+}
+
+.input-group-text {
+    background-color: var(--flat-fondo);
+    border: 1px solid var(--flat-gris-claro);
+    color: var(--flat-gris);
+}
+
+.form-check-input {
+    border-color: var(--flat-gris-claro);
+    border-radius: 2px;
+}
+
+.form-check-input:checked {
+    background-color: var(--flat-turquesa);
+    border-color: var(--flat-turquesa);
+}
+
+.form-check-input:focus {
+    box-shadow: none !important;
+    border-color: var(--flat-azul);
+}
+
+.form-text { font-size: .76rem; color: var(--flat-gris); }
+
+.obligatorio::after { content: " *"; color: var(--flat-rojo); }
+
+/* =====================================================================
+   10. BOTONES
+   ===================================================================== */
+
+.btn {
+    font-family: "Montserrat", "Segoe UI", sans-serif;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    padding: .5rem 1rem;
+    border-width: 1px;
+    border-radius: 4px;
+    transition: background-color .12s linear, border-color .12s linear,
+                color .12s linear;
+}
+
+.btn-sm { font-size: .74rem; padding: .35rem .7rem; border-radius: 4px; }
+.btn-lg { font-size: .9rem; padding: .7rem 1.4rem; border-radius: 4px; }
+
+/* Foco visible sin resplandor: un contorno solido. */
+.btn:focus-visible {
+    outline: 2px solid var(--flat-azul);
+    outline-offset: 1px;
+    box-shadow: none !important;
+}
+
+/* --- Boton primario --- */
+.btn-hotel {
+    background-color: var(--flat-azul);
+    border-color: var(--flat-azul);
+    color: #fff;
+}
+
+.btn-hotel:hover, .btn-hotel:focus, .btn-hotel:active {
+    background-color: var(--flat-azul-oscuro);
+    border-color: var(--flat-azul-oscuro);
+    color: #fff;
+}
+
+/* --- Llamada a la accion --- */
+.btn-oro {
+    background-color: var(--flat-naranja);
+    border-color: var(--flat-naranja);
+    color: #fff;
+}
+
+.btn-oro:hover, .btn-oro:focus, .btn-oro:active {
+    background-color: var(--flat-naranja-osc);
+    border-color: var(--flat-naranja-osc);
+    color: #fff;
+}
+
+/* --- Variantes solidas de Bootstrap ---
+   Bootstrap fija estos colores directamente en su hoja, sin pasar por
+   las variables de paleta, asi que hay que redefinirlos uno a uno. */
+.btn-primary { --bs-btn-bg: #3498db; --bs-btn-border-color: #3498db;
+               --bs-btn-hover-bg: #2980b9; --bs-btn-hover-border-color: #2980b9;
+               --bs-btn-active-bg: #2980b9; --bs-btn-active-border-color: #2980b9; }
+
+.btn-success { --bs-btn-bg: #1abc9c; --bs-btn-border-color: #1abc9c;
+               --bs-btn-hover-bg: #16a085; --bs-btn-hover-border-color: #16a085;
+               --bs-btn-active-bg: #16a085; --bs-btn-active-border-color: #16a085; }
+
+.btn-danger  { --bs-btn-bg: #e74c3c; --bs-btn-border-color: #e74c3c;
+               --bs-btn-hover-bg: #c0392b; --bs-btn-hover-border-color: #c0392b;
+               --bs-btn-active-bg: #c0392b; --bs-btn-active-border-color: #c0392b; }
+
+.btn-warning { --bs-btn-bg: #f1c40f; --bs-btn-border-color: #f1c40f;
+               --bs-btn-color: #6b5300; --bs-btn-hover-color: #6b5300;
+               --bs-btn-hover-bg: #f39c12; --bs-btn-hover-border-color: #f39c12; }
+
+.btn-dark    { --bs-btn-bg: #2c3e50; --bs-btn-border-color: #2c3e50;
+               --bs-btn-hover-bg: #1e272e; --bs-btn-hover-border-color: #1e272e;
+               --bs-btn-active-bg: #1e272e; --bs-btn-active-border-color: #1e272e; }
+
+/* --- Variantes de contorno ---
+   Al pasar el raton se rellenan por completo: un cambio de bloque de
+   color, sin estados intermedios. */
+.btn-outline-secondary {
+    --bs-btn-color: #2c3e50;
+    --bs-btn-border-color: #dfe6e9;
+    --bs-btn-bg: #ffffff;
+    --bs-btn-hover-color: #ffffff;
+    --bs-btn-hover-bg: #2c3e50;
+    --bs-btn-hover-border-color: #2c3e50;
+    --bs-btn-active-color: #ffffff;
+    --bs-btn-active-bg: #2c3e50;
+    --bs-btn-active-border-color: #2c3e50;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #2980b9; --bs-btn-border-color: #3498db;
+    --bs-btn-hover-bg: #3498db; --bs-btn-hover-border-color: #3498db;
+    --bs-btn-active-bg: #2980b9; --bs-btn-active-border-color: #2980b9;
+}
+
+.btn-outline-success {
+    --bs-btn-color: #16a085; --bs-btn-border-color: #1abc9c;
+    --bs-btn-hover-bg: #1abc9c; --bs-btn-hover-border-color: #1abc9c;
+    --bs-btn-active-bg: #16a085; --bs-btn-active-border-color: #16a085;
+}
+
+.btn-outline-danger {
+    --bs-btn-color: #c0392b; --bs-btn-border-color: #e74c3c;
+    --bs-btn-hover-bg: #e74c3c; --bs-btn-hover-border-color: #e74c3c;
+    --bs-btn-active-bg: #c0392b; --bs-btn-active-border-color: #c0392b;
+}
+
+.btn-outline-dark {
+    --bs-btn-color: #2c3e50; --bs-btn-border-color: #2c3e50;
+    --bs-btn-hover-bg: #2c3e50; --bs-btn-hover-border-color: #2c3e50;
+    --bs-btn-active-bg: #1e272e; --bs-btn-active-border-color: #1e272e;
+}
+
+.btn-link { color: var(--flat-azul-oscuro); font-weight: 600; }
+
+/* =====================================================================
+   11. AVISOS
+   ===================================================================== */
+
+/*
+   Alerta plana: fondo de un solo tono y una barra lateral solida que
+   indica de que tipo de mensaje se trata.
+*/
+.alert {
+    border: 1px solid transparent;
+    border-left-width: 4px;
+    padding: .8rem 1rem;
+    font-size: .875rem;
+}
+
+.alert-success {
+    background-color: #d4f5ed; border-color: #a3e7d8;
+    border-left-color: var(--flat-turquesa-osc); color: #0e6655;
+}
+.alert-danger {
+    background-color: #fadbd8; border-color: #f5b7b1;
+    border-left-color: var(--flat-rojo); color: #922b21;
+}
+.alert-warning {
+    background-color: #fdf3cf; border-color: #fbe7a1;
+    border-left-color: var(--flat-amarillo-osc); color: #7e6514;
+}
+.alert-info {
+    background-color: #d6eaf8; border-color: #aed6f1;
+    border-left-color: var(--flat-azul); color: #1f6391;
+}
+.alert-light {
+    background-color: #f8fafb; border-color: var(--flat-borde);
+    border-left-color: var(--flat-gris-claro); color: var(--flat-oscuro);
+}
+
+/* =====================================================================
+   12. BARRAS DE PROGRESO Y PESTANAS
+   ===================================================================== */
+
+.progress {
+    background-color: var(--flat-borde);
+    height: 8px;
+}
+
+.progress-bar { transition: none; }
+
+.nav-tabs { border-bottom: 2px solid var(--flat-borde); }
+
+.nav-tabs .nav-link {
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    color: var(--flat-gris);
+    font-family: "Montserrat", "Segoe UI", sans-serif;
+    font-weight: 600;
+    font-size: .82rem;
+    padding: .65rem 1rem;
+    margin-bottom: -2px;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--flat-azul);
+    border-bottom-color: var(--flat-gris-claro);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: transparent;
+    border-bottom-color: var(--flat-azul);
+    color: var(--flat-oscuro);
+}
+
+/* =====================================================================
+   13. MENUS, LISTAS Y MODALES
+   ===================================================================== */
+
+.dropdown-menu {
+    border: 1px solid var(--flat-borde);
+    padding: .3rem 0;
+    font-size: .86rem;
+}
+
+.dropdown-item { padding: .45rem 1rem; }
+
+.dropdown-item:hover { background-color: var(--flat-fondo); }
+
+.dropdown-item:active, .dropdown-item:focus {
+    background-color: var(--flat-azul);
+    color: #fff;
+}
+
+.dropdown-header {
+    font-family: "Montserrat", "Segoe UI", sans-serif;
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--flat-gris);
+}
+
+.list-group-item {
+    border-color: var(--flat-borde);
+    padding: .8rem 1.2rem;
+}
+
+.modal-content { border: 1px solid var(--flat-borde); }
+.modal-header  { border-bottom: 1px solid var(--flat-borde); }
+.modal-footer  { border-top: 1px solid var(--flat-borde); }
+
+/* =====================================================================
+   14. PANTALLAS ESPECIALES
+   ===================================================================== */
+
+/* ------------------------------------------------ Ingreso y error --- */
+
+.pantalla-login {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background-color: var(--flat-noche);
+}
+
+.caja-login {
+    background-color: var(--flat-blanco);
+    border-radius: 3px;
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+}
+
+.caja-login .encabezado {
+    background-color: var(--flat-azul);
+    color: #fff;
+    padding: 2.2rem 2rem 1.8rem;
+    text-align: center;
+}
+
+.caja-login .encabezado h1 { color: #fff; }
+
+.caja-login .encabezado .simbolo {
+    font-size: 2.5rem;
+    color: #fff;
+    line-height: 1;
+}
+
+.caja-login .cuerpo-login { padding: 1.9rem 2rem 2.1rem; }
+
+/* ------------------------------------------- Linea de movimientos --- */
+
+.linea-tiempo { list-style: none; margin: 0; padding: 0 0 0 1.4rem; position: relative; }
+
+.linea-tiempo::before {
+    content: "";
+    position: absolute;
+    left: .35rem;
+    top: .4rem;
+    bottom: .4rem;
+    width: 2px;
+    background-color: var(--flat-borde);
+}
+
+.linea-tiempo li { position: relative; padding: 0 0 1.1rem .6rem; }
+
+/* Marcadores cuadrados, no circulos. */
+.linea-tiempo li::before {
+    content: "";
+    position: absolute;
+    left: -.05rem;
+    top: .4rem;
+    width: .55rem;
+    height: .55rem;
+    background-color: var(--flat-azul);
+}
+
+/* ----------------------------------------------- Hoja de factura --- */
+
+.hoja-factura {
+    background-color: #fff;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2.5rem;
+    border: 1px solid var(--flat-borde);
+    border-top: 4px solid var(--flat-azul);
+}
+
+/* =====================================================================
+   15. RESPONSIVO
+   ===================================================================== */
+
+@media (max-width: 991.98px) {
+    .menu-lateral {
+        transform: translateX(-100%);
+        transition: transform .2s linear;
+    }
+    .menu-lateral.abierto { transform: translateX(0); }
+    .contenido { margin-left: 0; }
+    .cuerpo { padding: 1.2rem 1rem 3rem; }
+    .barra-superior { padding: .75rem 1rem; }
+}
+
+@media (min-width: 992px) {
+    .boton-menu { display: none; }
+}
+
+/* Capa plana que cubre el contenido cuando el menu se abre en
+   pantallas pequenas. */
+.velo {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(30, 39, 46, .65);
+    z-index: 1035;
+}
+
+.velo.visible { display: block; }
+
+/* =====================================================================
+   16. IMPRESION
+   ===================================================================== */
+
+@media print {
+    .menu-lateral,
+    .barra-superior,
+    .velo,
+    .sin-imprimir { display: none !important; }
+
+    .contenido { margin-left: 0; }
+    .cuerpo { padding: 0; }
+    body { background: #fff; }
+
+    .hoja-factura { border: none; padding: 0; max-width: 100%; }
+
+    /* En papel, una cabecera oscura gasta tinta sin aportar nada. */
+    .table > thead > tr > th {
+        background-color: #fff !important;
+        color: #000 !important;
+        border-bottom: 2px solid #000 !important;
+    }
+}
