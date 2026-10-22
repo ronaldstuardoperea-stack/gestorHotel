@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                             http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <display-name>Sistema de Gestion Hotelera</display-name>
+
+    <!--
+        Los Servlets se declaran con la anotacion @WebServlet en cada
+        clase. Los FILTROS, en cambio, se declaran aqui a proposito:
+        la especificacion no define en que orden se ejecutan los filtros
+        anotados, y aqui el orden si importa.
+
+        El filtro de codificacion debe correr ANTES que cualquier otra
+        cosa, porque una vez que se lee el primer parametro de la
+        peticion ya no se puede cambiar la codificacion. Declarandolo
+        primero en este archivo, su lugar en la cadena queda garantizado.
+    -->
+    <filter>
+        <filter-name>CodificacionFiltro</filter-name>
+        <filter-class>com.hotel.filtro.CodificacionFiltro</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CodificacionFiltro</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>AutenticacionFiltro</filter-name>
+        <filter-class>com.hotel.filtro.AutenticacionFiltro</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AutenticacionFiltro</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- Pagina de arranque: decide si mandar al login o al tablero. -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <!--
+        Paginas de error propias. Sin esto, Tomcat muestra su pantalla
+        blanca con el rastro completo de la excepcion, que ademas de ser
+        incomprensible para el usuario revela la estructura interna del
+        sistema.
+    -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/vistas/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/vistas/error.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/WEB-INF/vistas/error.jsp</location>
+    </error-page>
+
+    <!-- La sesion caduca a los 30 minutos sin actividad. -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+</web-app>
